@@ -4,8 +4,9 @@
   "description": "Ergonomic CLI for the Plane project tracker",
   "bin": { "plane-axi": "./bin/plane-axi" },
   "scripts": {
-    "test": "node --test test/",
+    "test": "node --test",
     "link": "npm link"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module"
 }

@@ -1,5 +1,11 @@
 #!/usr/bin/env node
-// plane-axi — ergonomic CLI for Plane
-// Reads PLANE_API_KEY, PLANE_BASE_URL, PLANE_WORKSPACE_SLUG from env.
-// Full docs in README.md.
-console.log("plane-axi v0.1.0 — scaffold, not yet functional")
+// plane-axi — ergonomic CLI for the Plane project tracker
+// Version fast path: answer before the CLI graph loads.
+import { VERSION } from '../lib/version.js'; // leaf module — no other imports
+const a = process.argv[2];
+if (a === '-v' || a === '-V' || a === '--version') {
+  console.log(VERSION);
+  process.exit(0);
+}
+const { main } = await import('../lib/cli.js');
+main();

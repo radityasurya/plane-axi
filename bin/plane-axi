@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+// plane-axi — ergonomic CLI for Plane
+// Reads PLANE_API_KEY, PLANE_BASE_URL, PLANE_WORKSPACE_SLUG from env.
+// Full docs in README.md.
+console.log("plane-axi v0.1.0 — scaffold, not yet functional")

@@ -1,0 +1,11 @@
+{
+  "name": "plane-axi",
+  "version": "0.1.0",
+  "description": "Ergonomic CLI for the Plane project tracker",
+  "bin": { "plane-axi": "./bin/plane-axi" },
+  "scripts": {
+    "test": "node --test test/",
+    "link": "npm link"
+  },
+  "license": "MIT"
+}

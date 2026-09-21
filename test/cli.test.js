@@ -1,46 +1,48 @@
+// Unit tests for plane-axi internals. Run: npm test
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { q, table, detail, help, timeAgo, stripHtml, truncBody } from '../lib/cli.js';
+import { _internals } from '../lib/cli.js';
 
-test('q quotes only when needed', () => {
+const { q, htmlToText, toHtml, truncate, parseSeq } = _internals;
+
+test('q quotes what TOON requires', () => {
   assert.equal(q('plain'), 'plain');
-  assert.equal(q('a,b'), '"a,b"');
-  assert.equal(q('say "hi"'), '"say ""hi"""');
-  assert.equal(q(null), '');
+  assert.equal(q('has,comma'), '"has,comma"');
+  assert.equal(q('has "quote"'), '"has \\"quote\\""');
+  assert.equal(q('multi\nline'), '"multi\\nline"');
+  assert.equal(q(''), '""');
+  assert.equal(q('123'), '"123"'); // numeric-looking string must not decode as number
+  assert.equal(q('null'), '"null"');
+  assert.equal(q(5), '5');
+  assert.equal(q(null), 'null');
+  assert.equal(q('trailing '), '"trailing "');
+  // no delimiter in object fields: comma stays bare
+  assert.equal(q('a,b', null), 'a,b');
 });
 
-test('table renders TOON rows', () => {
-  assert.deepEqual(table('issues', ['seq', 'title'], [{ seq: 1, title: 'Fix' }, { seq: 2, title: 'a,b' }]), [
-    'issues[2]{seq,title}:',
-    '  1,Fix',
-    '  2,"a,b"',
-  ]);
+test('htmlToText strips tags and decodes entities', () => {
+  assert.equal(htmlToText('<p>a &amp; b</p><p>c&lt;d</p>'), 'a & b\nc<d');
+  assert.equal(htmlToText('<ul><li>x</li><li>y</li></ul>'), '- x\n- y');
+  assert.equal(htmlToText(null), '');
+  assert.equal(htmlToText('plain'), 'plain');
 });
 
-test('detail indents key-value pairs', () => {
-  assert.deepEqual(detail('issue', [['seq', '#9'], ['title', 'x,y']]), ['issue:', '  seq: #9', '  title: "x,y"']);
+test('toHtml round-trips through htmlToText', () => {
+  const src = 'line one\nline two\n\npara two, with <angle> & amp';
+  assert.equal(htmlToText(toHtml(src)), 'line one\nline two\npara two, with <angle> & amp');
 });
 
-test('help lists lines with count', () => {
-  assert.deepEqual(help(['a', 'b']), ['help[2]:', '  a', '  b']);
-  assert.deepEqual(help([]), []);
+test('truncate marks and reports', () => {
+  assert.deepEqual(truncate('short', 10), { text: 'short', truncated: false });
+  const r = truncate('x'.repeat(600), 500);
+  assert.equal(r.truncated, true);
+  assert.match(r.text, /\[\.\.\.truncated, 600 chars total\]$/);
 });
 
-test('timeAgo buckets', () => {
-  const now = Date.parse('2025-01-10T00:00:00Z');
-  assert.equal(timeAgo('2025-01-10T00:00:10Z', now), 'just now');
-  assert.equal(timeAgo('2025-01-09T23:30:00Z', now), '30m ago');
-  assert.equal(timeAgo('2025-01-09T10:00:00Z', now), '14h ago');
-  assert.equal(timeAgo('2025-01-01T00:00:00Z', now), '9d ago');
-});
-
-test('stripHtml converts description_html to text', () => {
-  assert.equal(stripHtml('<p>a &amp; b</p><p>c</p>'), 'a & b\nc');
-});
-
-test('truncBody marks long text and reports total', () => {
-  const { text, note } = truncBody('x'.repeat(1500), 1000);
-  assert.equal(text.length, 1000);
-  assert.match(note, /truncated, 1500 chars total/);
-  assert.equal(truncBody('short').note, null);
+test('parseSeq accepts #110 and rejects junk', () => {
+  assert.equal(parseSeq('#110'), 110);
+  assert.equal(parseSeq('110'), 110);
+  assert.equal(parseSeq('abc'), null);
+  assert.equal(parseSeq('-5'), null);
+  assert.equal(parseSeq(undefined), null);
 });

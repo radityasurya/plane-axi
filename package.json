@@ -1,12 +1,20 @@
 {
   "name": "plane-axi",
   "version": "0.1.0",
-  "description": "Ergonomic CLI for the Plane project tracker",
+  "description": "AXI-compliant Plane CLI — projects, issues, states, and comments with token-efficient TOON output",
   "bin": { "plane-axi": "./bin/plane-axi" },
+  "engines": { "node": ">=22" },
+  "keywords": ["axi", "plane", "project-tracker", "issues", "agent", "cli", "toon"],
+  "repository": {
+    "url": "git+https://github.com/radityasurya/plane-axi.git",
+    "type": "git"
+  },
   "scripts": {
     "test": "node --test",
     "link": "npm link"
   },
   "license": "MIT",
+  "type": "module",
+  "files": ["bin", "lib"],
   "type": "module"
 }

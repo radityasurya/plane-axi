@@ -2,7 +2,7 @@
   "name": "plane-axi",
   "version": "0.1.0",
   "description": "AXI-compliant Plane CLI — projects, issues, states, and comments with token-efficient TOON output",
-  "bin": { "plane-axi": "./bin/plane-axi" },
+  "bin": { "plane-axi": "./bin/plane-axi.js" },
   "engines": { "node": ">=22" },
   "keywords": ["axi", "plane", "project-tracker", "issues", "agent", "cli", "toon"],
   "repository": {

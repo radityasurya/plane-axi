@@ -30,10 +30,10 @@ environment. If one is missing, the CLI says so and prints the exports.
 ```sh
 plane-axi projects
 plane-axi states --project LNKIN
-plane-axi issues --project LNKIN [--state Todo] [--priority high] [--limit 20]
+plane-axi issues --project LNKIN [--state Todo] [--priority high] [--parent 40] [--limit 20]
 plane-axi issue view 110 --project LNKIN [--comments] [--full]
-plane-axi issue create --project LNKIN --title "..." [--state Todo] [--priority high] [--description "..."]
-plane-axi issue update 110 --project LNKIN [--state Done] [--title ...] [--priority ...]
+plane-axi issue create --project LNKIN --title "..." [--state Todo] [--priority high] [--description "..."] [--parent 40]
+plane-axi issue update 110 --project LNKIN [--state Done] [--title ...] [--priority ...] [--description ...] [--parent 40|none]
 plane-axi issue close 110 --project LNKIN [--comment "delivered"]
 plane-axi issue comment 110 "text" --project LNKIN
 ```
@@ -52,6 +52,7 @@ JSON (full field set, UUIDs included).
 - **`issue close` is idempotent.** Closing an already-closed issue is a no-op
   with exit 0; a `--comment` given alongside is still added — do not
   read-then-write.
+- **HTTP 429 is retried** with back-off inside the CLI; do not add sleeps.
 - **Totals, not pages.** Lists fetch every page before filtering; trust
   `count: N of M total` instead of paginating to count.
 - **Descriptions truncate at 500 chars** with a `[...truncated]` marker and an

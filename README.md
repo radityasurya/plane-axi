@@ -106,10 +106,10 @@ plane-axi issue comment 110 "Looks good" --project LNKIN
 | *(none)* | Dashboard: every project plus the next commands to run |
 | `projects` | Projects — identifiers and names |
 | `states` | A project's states — names and groups |
-| `issues` | List a project's issues; filter by state or priority |
-| `issue view` | One issue with description, dates, and optional comments |
-| `issue create` | Create with `--title`; state, priority, description optional |
-| `issue update` | Change state, title, or priority |
+| `issues` | List a project's issues; filter by state, priority, or parent |
+| `issue view` | One issue with description, dates, parent, and optional comments |
+| `issue create` | Create with `--title`; state, priority, description, parent optional |
+| `issue update` | Change state, title, priority, description, or parent (`--parent none` clears it) |
 | `issue close` | Move to a completed state; optional `--comment` |
 | `issue comment` | Add a comment |
 
@@ -133,6 +133,8 @@ identifier (`LNKIN`), or the exact name.
 - **Idempotent state changes.** `issue close` on an already-closed issue is a no-op
   with exit 0, so agents declare intent instead of reading first. A `--comment`
   given alongside is still added — commenting is separate intent.
+- **Rate limits are retried.** An HTTP 429 waits for `Retry-After`, or backs off
+  5, 10, 20 and 40 s, before it fails. Scripts need no sleeps of their own.
 - **Totals, not pages.** Lists fetch every page before filtering; `count: 32 of 219
   total` is definitive, and zero results say so explicitly instead of printing
   nothing.

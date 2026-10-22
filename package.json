@@ -1,6 +1,6 @@
 {
   "name": "plane-axi",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AXI-compliant Plane CLI — projects, issues, states, and comments with token-efficient TOON output",
   "bin": {
     "plane-axi": "bin/plane-axi.js"
